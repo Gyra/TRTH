@@ -11,25 +11,28 @@ import json
 import requests
 from time import sleep
 import pandas as pd
+from getpass import _raw_input, getpass, GetPassWarning
+import collections
 
-_outputPath = './output/'
+_outputPath = '/Users/gyra/Dropbox (Personal)/Python/TRTH/TRTH/output/'
 _outputName = 'trthTest'
 _retryTime = 30.0
+_jsonFileName = 'trth_request_test.json'
 
 
-def request_new_token(id='', password=''):
+def requestNewToken(uid='9013692', password='Thatcher1979'):
     _authenURL = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Authentication/RequestToken'
     _header = {}
     _header['Prefer'] = 'respond-async'
     _header['Content-Type'] = 'application/json; odata.metadata=minimal' # CHECK MEANING
     _data = {'Credentials': {
         'Password': password,
-        'Username': id
+        'Username': uid
         }
     }
 
     # send login request
-    resp = requests.post(_authenURL, json=_data, _header=_header)
+    resp = requests.post(_authenURL, json=_data, headers=_header)
 
     # error
     if resp.status_code != 200:
@@ -37,7 +40,8 @@ def request_new_token(id='', password=''):
 
     return json.loads(resp.text)['value']
 
-def extract_raw(token, json_payload):
+
+def extractRaw(token, json_payload):
     try:
         _extractURL = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/ExtractRaw'
         _header = {}
@@ -57,7 +61,7 @@ def extract_raw(token, json_payload):
 
             # get location from header, URL must be https so we need to change it using string replace function
             _location = str.replace(resp.headers['Location'], 'http://', 'https://')
-            print('Get status from' + str(_location))
+            print('Get status from ' + str(_location))
 
             # pooling loop to check request status every few seconds
             while True:
@@ -70,7 +74,7 @@ def extract_raw(token, json_payload):
 
         # get the job id from http response
         json_resp = json.loads(resp.text)
-        _jobID = json_resp.get('JobID')
+        _jobID = json_resp.get('JobId')
         print('Status is completed and the JobID is ' + str(_jobID) + '\n')
 
         # check if the response contains Notes. If the note exists print it to console
@@ -82,7 +86,7 @@ def extract_raw(token, json_payload):
 
         # get the result by passing job id to RAWExtractionResults URL
         _getResultURL = str("https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/RawExtractionResults(\'" + _jobID + "\')/$value")
-        print('Retrieve result from' + _getResultURL)
+        print('Retrieve result from ' + _getResultURL)
         resp = requests.get(_getResultURL, headers=_header, stream=True)
 
         # write output to file
@@ -90,7 +94,7 @@ def extract_raw(token, json_payload):
         with open(output_file, 'wb') as f:
             f.write(resp.raw.read())
 
-        print('Write output to ' + output_file + 'completed\n\n')
+        print('Write output to ' + output_file + ' completed\n\n')
         print('Below is sample data from ' + output_file)
         # read data from csv.gz and shows output from dataframe head() and tail()
         df = pd.read_csv(output_file, compression='gzip')
@@ -104,3 +108,51 @@ def extract_raw(token, json_payload):
     return
 
 
+if __name__ == '__main__':
+    try:
+        # request a new token
+        print('Login to DSS')
+        # _DSSusername = _raw_input('Enter DSS Username:')
+        try:
+            # _DSSpassword = getpass(prompt='Enter DSS Password')
+            # _token = requestNewToken(_DSSusername, _DSSpassword)
+            _token = requestNewToken()
+        except GetPassWarning as e:
+            print(e)
+        print('Token = ' + _token + '\n')
+
+        #read the http request body from json file.
+        with open(_jsonFileName, 'r') as fd:
+            query_string = json.load(fd, object_pairs_hook=collections.OrderedDict)
+        extractRaw(_token, query_string)
+
+    except Exception as e:
+        print(e)
+
+
+
+# a = collections.OrderedDict({
+#     "ExtractionRequest": collections.OrderedDict({
+#         "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.TickHistoryIntradaySummariesExtractionRequest",
+#         "ContentFieldNames": ["Close Bid"],
+#         "IdentifierList": collections.OrderedDict({
+#             "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList",
+#             "InstrumentIdentifiers": [collections.OrderedDict({
+#                 "Identifier": "EUR=",
+#                 "IdentifierType": "Ric"
+#             })
+#             ]
+#             # "ValidationOptions": None,
+#             # "UseUserPreferencesForValidationOptions": False
+#         }),
+#         "Condition": collections.OrderedDict({
+#             "MessageTimeStampIn": "GmtUtc",
+#             "ReportDateRangeType": "Range",
+#             "QueryStartDate": "2017-09-03T23:45:00.000Z",
+#             "QueryEndDate": "2017-09-06T12:30:00.000Z"
+#             # "DisplaySourceRIC": True
+#         })
+#     })
+# })
+# with open('trth_request_test.json', 'w') as ff:
+#     ff.write(json.dumps(a, indent=4, sort_keys=False, ensure_ascii=False))

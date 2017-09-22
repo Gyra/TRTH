@@ -1,0 +1,23 @@
+{
+    "ExtractionRequest": {
+        "ContentFieldNames": [
+            "Close Bid"
+        ],
+        "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.TickHistoryIntradaySummariesExtractionRequest",
+        "IdentifierList": {
+            "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList",
+            "InstrumentIdentifiers": [
+                {
+                    "Identifier": "EUR=",
+                    "IdentifierType": "Ric"
+                }
+            ]
+        },
+        "Condition": {
+            "QueryEndDate": "2017-09-06T12:30:00.000Z",
+            "QueryStartDate": "2017-09-03T23:45:00.000Z",
+            "ReportDateRangeType": "Range",
+            "MessageTimeStampIn": "GmtUtc"
+        }
+    }
+}
