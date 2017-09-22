@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 """
 This is used to request data from DSS TRTH
-Adapted from:
+Adapted from official example and document:
+https://developers.thomsonreuters.com/thomson-reuters-tick-history-trth/thomson-reuters-tick-history-trth-rest-api/learning?content=11220&type=learning_material_item
 https://github.com/TR-API-Samples/Article.TRTH.Python.REST.OndemandRequestTimeAndSales/blob/master/TickHistoryTimesAndSalesRequest.py
 current version: Handing Sun 21/9/2017
 """
@@ -20,7 +21,7 @@ _retryTime = 30.0
 _jsonFileName = 'trth_request_test.json'
 
 
-def requestNewToken(uid='9013692', password='Thatcher1979'):
+def requestNewToken(uid='', password=''):
     _authenURL = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Authentication/RequestToken'
     _header = {}
     _header['Prefer'] = 'respond-async'
@@ -112,10 +113,10 @@ if __name__ == '__main__':
     try:
         # request a new token
         print('Login to DSS')
-        # _DSSusername = _raw_input('Enter DSS Username:')
+        _DSSusername = _raw_input('Enter DSS Username:')
         try:
-            # _DSSpassword = getpass(prompt='Enter DSS Password')
-            # _token = requestNewToken(_DSSusername, _DSSpassword)
+            _DSSpassword = getpass(prompt='Enter DSS Password')
+            _token = requestNewToken(_DSSusername, _DSSpassword)
             _token = requestNewToken()
         except GetPassWarning as e:
             print(e)
