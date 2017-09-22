@@ -25,7 +25,7 @@ def requestNewToken(uid='', password=''):
     _authenURL = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Authentication/RequestToken'
     _header = {}
     _header['Prefer'] = 'respond-async'
-    _header['Content-Type'] = 'application/json; odata.metadata=minimal' # CHECK MEANING
+    _header['Content-Type'] = 'application/json; odata.metadata=minimal'  # CHECK MEANING
     _data = {'Credentials': {
         'Password': password,
         'Username': uid
@@ -117,7 +117,6 @@ if __name__ == '__main__':
         try:
             _DSSpassword = getpass(prompt='Enter DSS Password')
             _token = requestNewToken(_DSSusername, _DSSpassword)
-            _token = requestNewToken()
         except GetPassWarning as e:
             print(e)
         print('Token = ' + _token + '\n')
@@ -138,21 +137,19 @@ if __name__ == '__main__':
 #         "ContentFieldNames": ["Close Bid"],
 #         "IdentifierList": collections.OrderedDict({
 #             "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList",
-#             "InstrumentIdentifiers": [collections.OrderedDict({
+#             "InstrumentIdentifiers": [{
 #                 "Identifier": "EUR=",
 #                 "IdentifierType": "Ric"
-#             })
+#             }
 #             ]
-#             # "ValidationOptions": None,
-#             # "UseUserPreferencesForValidationOptions": False
 #         }),
-#         "Condition": collections.OrderedDict({
+#         "Condition": {
 #             "MessageTimeStampIn": "GmtUtc",
 #             "ReportDateRangeType": "Range",
 #             "QueryStartDate": "2017-09-03T23:45:00.000Z",
 #             "QueryEndDate": "2017-09-06T12:30:00.000Z"
 #             # "DisplaySourceRIC": True
-#         })
+#         }
 #     })
 # })
 # with open('trth_request_test.json', 'w') as ff:
