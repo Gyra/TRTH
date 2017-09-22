@@ -10,9 +10,10 @@ import os
 import json
 import requests
 from time import sleep
+import pandas as pd
 
-_outputPath = './output'
-_outputName = './trthTest'
+_outputPath = './output/'
+_outputName = 'trthTest'
 _retryTime = 30.0
 
 
@@ -66,4 +67,40 @@ def extract_raw(token, json_payload):
                 else:
                     print('Status: ' + str(resp.headers['Status']))
                 sleep(_retryTime)
+
+        # get the job id from http response
+        json_resp = json.loads(resp.text)
+        _jobID = json_resp.get('JobID')
+        print('Status is completed and the JobID is ' + str(_jobID) + '\n')
+
+        # check if the response contains Notes. If the note exists print it to console
+        if len(json_resp.get('Notes')) > 0:
+            print('Note:\n================================')
+            for var in json_resp.get('Notes'):
+                print(var)
+            print('================================\n')
+
+        # get the result by passing job id to RAWExtractionResults URL
+        _getResultURL = str("https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/RawExtractionResults(\'" + _jobID + "\')/$value")
+        print('Retrieve result from' + _getResultURL)
+        resp = requests.get(_getResultURL, headers=_header, stream=True)
+
+        # write output to file
+        output_file = str(_outputPath + _outputName + str(os.getpid()) + '.csv.gz')
+        with open(output_file, 'wb') as f:
+            f.write(resp.raw.read())
+
+        print('Write output to ' + output_file + 'completed\n\n')
+        print('Below is sample data from ' + output_file)
+        # read data from csv.gz and shows output from dataframe head() and tail()
+        df = pd.read_csv(output_file, compression='gzip')
+        print(df.head())
+        print('....')
+        print(df.tail)
+
+    except Exception as ex:
+        print('Exception occurs: ', ex)
+
+    return
+
 
