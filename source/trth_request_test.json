@@ -1,23 +1,31 @@
 {
     "ExtractionRequest": {
-        "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.TickHistoryIntradaySummariesExtractionRequest",
+        "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.TickHistoryMarketDepthExtractionRequest",
         "ContentFieldNames": [
-            "Close Bid"
+            "Ask Price",
+            "Bid Price"
         ],
         "IdentifierList": {
             "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList",
             "InstrumentIdentifiers": [
                 {
-                    "Identifier": "EUR=",
+                    "Identifier": "IBM.N",
                     "IdentifierType": "Ric"
                 }
-            ]
+            ],
+            "ValidationOptions": {
+                "AllowHistoricalInstruments": true
+            }
         },
         "Condition": {
+            "View": "NormalizedLL2",
+            "NumberOfLevels": 2,
+            "MessageTimeStampIn": "GmtUtc",
             "ReportDateRangeType": "Range",
-            "QueryEndDate": "2017-09-06T12:30:00.000Z",
-            "QueryStartDate": "2017-09-03T23:45:00.000Z",
-            "MessageTimeStampIn": "GmtUtc"
+            "QueryStartDate": "2017-07-10T01:00:00.000Z",
+            "QueryEndDate": "2017-10-20T01:00:00.000Z",
+            "Preview": "None",
+            "DisplaySourceRIC": true
         }
     }
 }

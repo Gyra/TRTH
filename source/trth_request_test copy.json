@@ -1,0 +1,41 @@
+{
+    "ExtractionRequest": {"@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.InstrumentIdentifierList",
+        "ContentFieldNames": [
+            "Ask Price",
+            "Bid Price",
+            "Ask Size",
+            "Bid Size"
+        ],
+        "IdentifierList": {
+            "InstrumentIdentifiers": [
+                {
+                    "Identifier": "ZCZ7",
+                    "IdentifierType": "Ric"
+                },
+                {
+                    "Identifier": "ZSX7",
+                    "IdentifierType": "Ric"
+                },
+                {
+                    "Identifier": "ZWZ7",
+                    "IdentifierType": "Ric"
+                },
+                {
+                    "Identifier": "LEZ7",
+                    "IdentifierType": "Ric"
+                },
+                {
+                    "Identifier": "HEZ7",
+                    "IdentifierType": "Ric"
+                }
+            ]},
+        "Condition": {
+            "MessageTimeStampIn": "GmtUtc",
+            "QueryStartDate": "2017-10-11T00:00:01.000Z",
+            "QueryEndDate": "2017-10-11T23:59:59.000Z",
+            "ReportDateRangeType": "Range",
+            "NumberOfLevels": 10
+        },
+        "@odata.type": "#ThomsonReuters.Dss.Api.Extractions.ExtractionRequests.TickHistoryMarketDepthExtractionRequest"
+    }
+}
